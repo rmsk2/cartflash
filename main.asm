@@ -10,6 +10,7 @@ jmp main
 .include "clut.asm"
 .include "khelp.asm"
 .include "txtio.asm"
+.include "diskio.asm"
 .include "flashcart.asm"
 
 WINDOW_MEM   = $8000
@@ -112,4 +113,8 @@ _copyPage
     lda COUNT_PAGE
     cmp #32
     bne _copyNextPage
+    rts
+
+
+bload
     rts
