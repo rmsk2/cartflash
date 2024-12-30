@@ -93,7 +93,8 @@ _fileOpened
     ; map new block into slot at $8000
     lda BYTE_COUNTER.currentBlock
     sta MMU_REG_LOAD
-    ; read data
+    jsr setSrcBlock
+    ; read data    
     jsr read8KBlock
     bcs _checkEnd                                                       ; carry is set. Either read error or EOF
     bra _procData
@@ -140,4 +141,26 @@ _closeError
     sec
     rts
 
+
+COUNT_PAGE .byte 0
+setSrcBlock
+    #load16BitImmediate WINDOW_MEM, CLEAN_PTR
+    stz COUNT_PAGE
+_copyNextPage
+    ldy #0
+    ; copy 8K block
+_copyPage
+    ; copy single page
+    lda COUNT_PAGE
+    sta (CLEAN_PTR), y
+    iny
+    bne _copyPage
+    ; update source addresses
+    inc CLEAN_PTR + 1
+    ; increment page counter
+    inc COUNT_PAGE
+    lda COUNT_PAGE
+    cmp #32
+    bne _copyNextPage
+    rts
 .endnamespace

@@ -216,29 +216,3 @@ _verifyError
 
 NAME .text "xdev"
 .byte 0
-
-COUNT_PAGE .byte 0
-setSrcBlock
-    #load16BitImmediate WINDOW_MEM, PTR_SOURCE
-    stz COUNT_PAGE
-_copyNextPage
-    ldy #0
-    ; copy 8K block
-_copyPage
-    ; copy single page
-    ; lda #31
-    ; sec
-    ; sbc COUNT_PAGE
-    lda COUNT_PAGE
-    ; lda #0
-    sta (PTR_SOURCE), y
-    iny
-    bne _copyPage
-    ; update source addresses
-    inc PTR_SOURCE + 1
-    ; increment page counter
-    inc COUNT_PAGE
-    lda COUNT_PAGE
-    cmp #32
-    bne _copyNextPage
-    rts
