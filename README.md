@@ -24,3 +24,8 @@ of the flash chip (SST39LF/VF020) was to be interpreted.
 You will need a python3 interpreter, GNU make and 64tass on your machine to build this software.
 Use `make` to build a `.pgz` executable and transfer it to your machine via an SD-card or `dcopy`.
 Alternatively you can use `make upload` to upload and start the program via the USB debug port.
+
+## Binary distribution
+
+Alternatively you can use a prebuilt binary which is available at the 
+[releases section](https://github.com/rmsk2/cartflash/releases) of this repository.
