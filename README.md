@@ -28,4 +28,6 @@ Alternatively you can use `make upload` to upload and start the program via the 
 ## Binary distribution
 
 Alternatively you can use a prebuilt binary which is available at the 
-[releases section](https://github.com/rmsk2/cartflash/releases) of this repository.
+[releases section](https://github.com/rmsk2/cartflash/releases) of this repository. Download the `.pgz`
+file from there, transfer it to your Foenix and start it via `pexec`, i.e. type `/- fcart` or 
+`/- drive number:fcart` (`drive number` = 0, 1 or 2) if you use an IEC drive at the BASIC prompt.
