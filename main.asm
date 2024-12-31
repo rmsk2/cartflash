@@ -20,9 +20,9 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "0.9.0"
+PROG_VERSION    .text "1.0.0"
 TXT_FILE_ERROR  .text "Error reading file", $0d
-TXT_BLOCK_ERROR .text "Flashcart not big enough"
+TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read  : $"
 TXT_BLOCKS_READ .text "Blocks read : $"
 TXT_FILE_NAME   .text "File to load: "
@@ -107,8 +107,8 @@ _printFileInfo
     #printString TXT_DONE, len(TXT_DONE)
     jsr txtio.newLine
     jsr printFileInfo
-    ; perform simple check whether the data fits into the flashcart
     jsr txtio.newLine
+    ; perform simple check whether the data fits into the flashcart
     lda bload.BYTE_COUNTER.numBlocks
     cmp #33
     bcc _enterFirstBlock
@@ -127,10 +127,10 @@ _checkSize
     jsr convDecimal
     jsr checkDataFit
     bcc _writeData
+    jsr txtio.newLine
     bra _end
 _writeData
     ; program cartridge
-    jsr txtio.newLine
     jsr txtio.newLine
     jsr programBlocks
     bcc _done
