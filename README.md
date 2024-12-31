@@ -19,8 +19,8 @@ your flash cartridge in an incremental fashion. The program by `Red-Fool` was ve
 made clear how the information in the [data sheet](https://ww1.microchip.com/downloads/en/DeviceDoc/20005023B.pdf) 
 of the flash chip (SST39LF/VF020) was to be interpreted.
 
- type `/- fcart` or `/- drive number:fcart` (`drive number` = 1 or 2 if you use an IEC drive) at the BASIC prompt
- in order to start the program.
+Type `/- fcart` or `/- drive number:fcart` (`drive number` = 1 or 2 if you use an IEC drive) at the BASIC prompt
+in order to start the program.
 
 ## How to build the program
 
