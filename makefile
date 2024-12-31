@@ -12,7 +12,7 @@ FORCE=
 PYTHON=python
 endif
 
-BINARY=flashcart
+BINARY=fcart
 
 all: $(BINARY).pgz
 
