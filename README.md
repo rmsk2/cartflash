@@ -3,7 +3,8 @@
 ## Usage
 This program allows you to write a file which resides on any of your Foenix's drives to the flash cartridge.
 As the flash cartridge has a size of 256 KB the maximum file size is accordingly 256 KB. The flash cart
-organizes its memory in 8 KB blocks. Which in turn means that there are 32 blocks available on the cart.
+organizes its memory in 8 KB blocks (strictly speaking in 4K blocks but the Foenix manages its memory in chunks of
+8 = 2 * 4 KB blocks). Which in turn means that there are 32 blocks available on the cart.
 
 This program allows you to write the data read from the specified file to consecutive 8K blocks on the
 flash cart. When prompted for the file name you can prefix it by a drive number followed by a colon. I.e.
