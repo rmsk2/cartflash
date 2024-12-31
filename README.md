@@ -30,6 +30,5 @@ Alternatively you can use `make upload` to upload and start the program via the 
 
 ## Binary distribution
 
-Alternatively you can use a prebuilt binary which is available at the 
-[releases section](https://github.com/rmsk2/cartflash/releases) of this repository. Download the `.pgz`
-file from there and transfer it to your Foenix.
+A prebuilt binary is available at the [releases section](https://github.com/rmsk2/cartflash/releases) of this repository. 
+Download the `.pgz` file from there and transfer it to your Foenix.
