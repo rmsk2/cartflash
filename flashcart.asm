@@ -13,7 +13,7 @@ WINDOW_FLASH = $6000
 ;
 ; Address $5555 in chip is in block $82 and when block $82 is mapped to $6000 the address $5555
 ; is seen as $7555
-; Address $2AAA in chip is in block $81 and when block $82 is mapped to $6000 the address $2AAA
+; Address $2AAA in chip is in block $81 and when block $81 is mapped to $6000 the address $2AAA
 ; is seen as $6AAA
 
 
