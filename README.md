@@ -19,6 +19,9 @@ your flash cartridge in an incremental fashion. The program by `Red-Fool` was ve
 made clear how the information in the [data sheet](https://ww1.microchip.com/downloads/en/DeviceDoc/20005023B.pdf) 
 of the flash chip (SST39LF/VF020) was to be interpreted.
 
+ type `/- fcart` or `/- drive number:fcart` (`drive number` = 1 or 2 if you use an IEC drive) at the BASIC prompt
+ in order to start the program.
+
 ## How to build the program
 
 You will need a python3 interpreter, GNU make and 64tass on your machine to build this software.
@@ -29,5 +32,4 @@ Alternatively you can use `make upload` to upload and start the program via the 
 
 Alternatively you can use a prebuilt binary which is available at the 
 [releases section](https://github.com/rmsk2/cartflash/releases) of this repository. Download the `.pgz`
-file from there, transfer it to your Foenix and start it via `pexec`, i.e. type `/- fcart` or 
-`/- drive number:fcart` (`drive number` = 0, 1 or 2) if you use an IEC drive at the BASIC prompt.
+file from there and transfer it to your Foenix.
