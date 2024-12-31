@@ -298,8 +298,8 @@ _progLoop
 
     ; program block
     lda PROG_BLOCK
-    ;jsr flashcart.overwrite8KBlock
-    clc
+    jsr flashcart.overwrite8KBlock
+    ;clc
     bcs _verifyError
 
     inc PROG_COUNT                                          ; increment number of blocks programmed
