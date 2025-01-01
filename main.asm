@@ -20,7 +20,7 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.0.0"
+PROG_VERSION    .text "1.1.0"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read  : $"
@@ -57,6 +57,23 @@ VALS .byte 0, 10, 20, 30, 40, 50, 60, 70, 80, 90
 PROG_COUNT .byte 0
 PROG_BLOCK .byte 0
 
+COL = $12 
+REV_COL = $21
+
+toRev .macro
+    pha
+    lda #REV_COL
+    sta CURSOR_STATE.col
+    pla
+.endmacro
+
+noRev .macro
+    pha
+    lda #COL
+    sta CURSOR_STATE.col
+    pla
+.endmacro
+
 main
     jsr setup.mmu
     jsr clut.init
@@ -75,7 +92,9 @@ _start
     jsr txtio.newLine
     ; enter file name
     #printString TXT_FILE_NAME, len(TXT_FILE_NAME)
-    #inputString bload.FILE_NAME, 78, FILE_ALLOWED, len(FILE_ALLOWED)
+    #toRev
+    #inputString bload.FILE_NAME, 79 - len(TXT_FILE_NAME), FILE_ALLOWED, len(FILE_ALLOWED)
+    #noRev
     cmp #0
     ; empty name entered => stop program
     bne _parsePath
@@ -118,7 +137,9 @@ _printFileInfo
 _enterFirstBlock
     ; Let the user specify the start block
     #printString TXT_BLOCK_START, len(TXT_BLOCK_START)
+    #toRev
     #inputString DIGIT_BUFFER, 2, DIGIT_ALLOWED, len(DIGIT_ALLOWED)
+    #noRev
     cmp #0
     ; if nothing is entered stop the program
     bne _checkSize
