@@ -38,4 +38,4 @@ Make sure that the serial port designation in the makefile, which is needed for 
 Prebuilt binaries are available at the [releases section](https://github.com/rmsk2/cartflash/releases) of this repository. 
 Download either the `.pgz` or the `.zip` file from there. The `pgz` is the executable which can be started via `pexec`
 after being transferred to your Foenix via an SD card, `dcopy`or `FoenixMgr`. The `.zip` file contains a flash image 
-and a `bulk.csv` which can be used to write `fcart` to the onbaord flash memory via `FoenixMgr`.
+and a `bulk.csv` which can be used to write `fcart` to the onboard flash memory via `FoenixMgr`.
