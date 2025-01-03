@@ -21,8 +21,8 @@ made clear how the information in the [data sheet](https://ww1.microchip.com/dow
 of the flash chip (SST39LF/VF020) was to be interpreted.
 
 When using `cartflash` as `.pgz` type `/- fcart` or `/- drive number:fcart` (`drive number` = 1 or 2 when the `.pgz` 
-file resides on an IEC drive) at the BASIC prompt in order to start the program. When running `cartflash` from onboard
-flash memory you can leave out the `-`, i.e. you simply call `/fcart`.
+file resides on an IEC drive) at the BASIC prompt in order to start the program via `pexec`. When running `cartflash` 
+from onboard flash memory you can leave out the `-`, i.e. you simply call `/fcart`.
 
 If you want to delete the whole flash cartridge before writing new data to it you can do that by adding the parameter 
 `erasealldata` when starting `fcart`, i.e. you could call `fcart` for instance like this `/fcart erasealldata` or this
