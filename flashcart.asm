@@ -85,6 +85,7 @@ eraseChip
     #send2AAA55
     #send5555XX $10
 
+    ; data sheet says that this needs at max 100ms
     jsr wait250ms
 
     #restoreMMU MMU_REG
@@ -232,6 +233,7 @@ erase4KBlock
 _upperHalf
     sta WINDOW_FLASH + $1000
 _wait
+    ; data sheet says this needs at max 25ms.
     jsr wait50ms
 
     #restoreMMU MMU_REG
