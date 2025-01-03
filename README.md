@@ -28,7 +28,7 @@ If you want to delete the whole flash cartridge before writing new data to it yo
 `erasealldata` when starting `fcart`, i.e. you could call `fcart` for instance like this `/fcart erasealldata` or this
 `/- fcart erasealldata`.
 
-**CAUTION**: When this parameter is detetced `fcart` asks for **no additional confirmation** before erasing all data.
+**WARNING**: When this parameter is detetced `fcart` asks for **no additional confirmation** before erasing all data.
 
 ## How to build the program
 
