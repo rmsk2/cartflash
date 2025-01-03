@@ -14,7 +14,7 @@ name you can prefix it by a drive number followed by a colon. I.e. for instance 
 flash block which is to be used. This value has to be in the range from 0 to 31. `cartflash` checks that all of the 
 8K blocks of the file fit into the cartridge when the write operation begins on the given start block.
 
-In contrast to the program available [here](https://github.com/Red-Fool/F256_FlashCart ) `cartflash`
+In contrast to `Red-Fool`'s program available [here](https://github.com/Red-Fool/F256_FlashCart ) `cartflash`
 does as a default not erase the whole flash chip before writing new data to it. This allows you to add data to
 your flash cartridge in an incremental fashion. The program by `Red-Fool` was very useful to me as it
 made clear how the information in the [data sheet](https://ww1.microchip.com/downloads/en/DeviceDoc/20005023B.pdf) 
