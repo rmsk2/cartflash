@@ -15,12 +15,14 @@ jmp main
 .include "flashcart.asm"
 .include "memory.asm"
 
+PROD = 1
+
 WINDOW_MEM   = $8000
 MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.1.0"
+PROG_VERSION    .text "1.2.0"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read  : $"
@@ -47,15 +49,20 @@ TXT_INFO7       .text $0d, "Find the source code at https://github.com/rmsk2/car
 TXT_INFO8       .text $0d, "under MIT license.", $0d
 TXT_INFO5       .text $0d, "Enter an empty string as a file name or start block to end program.", $0d
 TXT_LOAD_FILE   .text $0d, "Loading file ... "
+TXT_ERASE_ALL   .text "Erasing all data on flash cartridge ... "
 
-FILE_ALLOWED .text "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789_-./:#+~()!&@[]*"
-DIGIT_ALLOWED  .text "0123456789"
-DIGIT_BUFFER   .word 0
+FILE_ALLOWED    .text "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789_-./:#+~()!&@[]*"
+DIGIT_ALLOWED   .text "0123456789"
+TXT_PARAM_ERASE .text "erasealldata", $00
 
-FIRST_BLOCK .byte 0
-VALS .byte 0, 10, 20, 30, 40, 50, 60, 70, 80, 90
-PROG_COUNT .byte 0
-PROG_BLOCK .byte 0
+
+DIGIT_BUFFER       .word 0
+FIRST_BLOCK        .byte 0
+VALS               .byte 0, 10, 20, 30, 40, 50, 60, 70, 80, 90
+PROG_COUNT         .byte 0
+PROG_BLOCK         .byte 0
+ERASE_REQUESTED    .byte 0
+LEN_PARMS_IN_BYTES .byte 0
 
 COL = $12 
 REV_COL = $21
@@ -77,16 +84,40 @@ noRev .macro
 main
     jsr setup.mmu
     jsr clut.init
+    stz ERASE_REQUESTED
     jsr txtio.init80x60
     jsr txtio.cursorOn
     jsr initEvents
 
+    #move16Bit kernel.args.ext, PARM_PTR
+    lda kernel.args.extlen
+    sta LEN_PARMS_IN_BYTES
+    lsr
+    cmp #2
+    bcc _noErase
+    jsr checkEraseParam
+
+_noErase
     ; clear screen
     lda #$12
     sta CURSOR_STATE.col 
     jsr txtio.clear
 
     jsr printMsgHeader
+    lda ERASE_REQUESTED
+    beq _start
+
+    ; user requested to erase all data from flash chip
+    jsr txtio.newLine
+    #printString TXT_ERASE_ALL, len(TXT_ERASE_ALL)
+.if PROD == 1
+    jsr flashcart.eraseChip
+.endif
+    #printString TXT_DONE, len(TXT_DONE)
+    jsr txtio.newLine
+    jsr txtio.newLine
+    #printString TXT_DIVIDER, len(TXT_DIVIDER)
+    jsr txtio.newLine
 
 _start
     jsr txtio.newLine
@@ -236,6 +267,35 @@ returnToBasic
     rts
 
 
+TEMP_LO .byte 0
+TEMP_HI .byte 0
+checkEraseParam
+    ; determine address of second CLI parameter
+    ldy #2
+    lda (PARM_PTR), y
+    sta TEMP_LO
+    iny
+    lda (PARM_PTR), y
+    sta TEMP_HI
+    #move16Bit TEMP_LO, PARM_PTR
+    ; initialize reference pointer
+    #load16BitImmediate TXT_PARAM_ERASE, PARM_REF
+    ldy #0
+_cmpLoop
+    lda (PARM_PTR), y
+    cmp (PARM_REF), y
+    bne _doneUnequal
+    cmp #0
+    beq _doneEqual
+    iny
+    bra _cmpLoop
+_doneEqual
+    lda #BOOL_TRUE
+    sta ERASE_REQUESTED
+_doneUnequal
+    rts
+
+
 ; carry is set if data does not fit into cartridge
 checkDataFit
     ; Here FIRST_BLOCK contains the value entered by the user
@@ -319,8 +379,11 @@ _progLoop
 
     ; program block
     lda PROG_BLOCK
+.if PROD == 1
     jsr flashcart.overwrite8KBlock
-    ;clc
+.else
+    clc
+.endif
     bcs _verifyError
 
     inc PROG_COUNT                                          ; increment number of blocks programmed
