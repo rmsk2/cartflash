@@ -3,7 +3,8 @@
 This program allows you to write a file which resides on any of your Foenix's drives to a flash extension cartridge.
 As the flash cartridge has a size of 256 KB the maximum file size is accordingly 256 KB. The flash cart
 organizes its memory in 8 KB blocks (strictly speaking in 4K blocks but the Foenix manages its memory in chunks of
-8 = 2 * 4 KB blocks), which in turn means that there are 32 individually addressable blocks available on the cart.
+8 = 2 * 4 KB blocks), which in turn means that there are 32 individually addressable blocks available on the cartridge
+which are numbered from 0 to 31.
 
 ## Usage
 
@@ -11,7 +12,7 @@ Data read from the specified file is written to consecutive 8K blocks on the fla
 name you can prefix it by a drive number followed by a colon. I.e. for instance `1:file.bin` would try to read 
 `file.bin` from drive 1. If no drive number is given it defaults to 0. You have to specify the number of the first 
 flash block which is to be used. This value has to be in the range from 0 to 31. `cartflash` checks that all of the 
-blocks of the file fit into the cartridge when the write operation begins on the given start block.
+8K blocks of the file fit into the cartridge when the write operation begins on the given start block.
 
 In contrast to the program available [here](https://github.com/Red-Fool/F256_FlashCart ) `cartflash`
 does as a default not erase the whole flash chip before writing new data to it. This allows you to add data to
@@ -19,9 +20,9 @@ your flash cartridge in an incremental fashion. The program by `Red-Fool` was ve
 made clear how the information in the [data sheet](https://ww1.microchip.com/downloads/en/DeviceDoc/20005023B.pdf) 
 of the flash chip (SST39LF/VF020) was to be interpreted.
 
-When using the `.pgz` type `/- fcart` or `/- drive number:fcart` (`drive number` = 1 or 2 when the `.pgz` file resides on
-an IEC drive) at the BASIC prompt in order to start the program. When running `cartflash` from onboard flash memory 
-you can leave out the `-`, i.e. you simply call `/fcart`.
+When using `cartflash` as `.pgz` type `/- fcart` or `/- drive number:fcart` (`drive number` = 1 or 2 when the `.pgz` 
+file resides on an IEC drive) at the BASIC prompt in order to start the program. When running `cartflash` from onboard
+flash memory you can leave out the `-`, i.e. you simply call `/fcart`.
 
 If you want to delete the whole flash cartridge before writing new data to it you can do that by adding the parameter 
 `erasealldata` when starting `fcart`, i.e. you could call `fcart` for instance like this `/fcart erasealldata` or this
