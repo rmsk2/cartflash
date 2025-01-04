@@ -71,7 +71,7 @@ load16BitImmediate .macro  val, addr
 .endmacro
 
 
-.if BUILD_ONBOARD_FLASH == 1
+.if BUILD_ONBOARD_FLASH != 0
 ; Please add an entry for each 8K data block which you want to copy from flash
 BLOCK1 .dstruct BlockSpec_t, $08, 0, 3, 32  ; copy flash block $08 (block number 64 + $08) to RAM block 0. Start at offset $0300
 .else
