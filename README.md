@@ -43,10 +43,10 @@ Make sure that the serial port designation in the makefile, which is needed for 
 If you change the value `BUILD_ONBOARD_FLASH` to 0 in `flashloader.asm` then you can build (via `make dist`) a version 
 which expects to be stored in block 31 on the flash cartridge. The resulting binary is stored as `fcartld.bin` in the 
 project directory. This allows the cartridge to be self contained in such  a way that no additional software is needed 
-to store data on the cartridge. If no other KUP headers are present in the cartridge upon boot or a reset then  `fcart`
-would be started automatically. If another KUP header is written in any other block this would take precendence for autostart 
-and `fcart` would still be callable via DOS or BASIC. In order to be able distinguish a version written to cartridge flash
-from another one living in on board flash, the cartridge version is named `fccart`.
+to store data on it. If no other KUP headers are present in the cartridge upon boot or a reset then  `fcart` would be 
+started automatically. If another KUP header is written in any other block this would take precendence for autostart 
+and `fcart` would still be callable via DOS or BASIC. In order to be able distinguish a version written to cartridge 
+flash from another one living in onboard flash, the cartridge version is named `fccart`.
 
 ## Binary distribution
 
