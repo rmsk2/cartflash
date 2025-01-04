@@ -15,6 +15,9 @@ SOURCE_ADDRESS = $8000
 TARGET_ADDRESS = $6000
 MMU_SOURCE     = (SOURCE_ADDRESS / $2000) + 8
 MMU_TARGET     = (TARGET_ADDRESS / $2000) + 8
+; Set to zero to build a version which lives in block $1f of the cartridge.
+; If set to any other value the onboard flash block $08 is used.
+BUILD_ONBOARD_FLASH = 1
 
 * = LOAD_ADDRESS
 .cpu "w65c02"
@@ -32,7 +35,11 @@ KUPHeader
 .byte LOAD_ADDRESS / $2000                 ; block in 16 bit address space to which the first block is mapped
 .word loader                               ; start address of program
 .byte $01, $00, $00, $00                   ; reserved. All examples I looked at had a $01 in the first position
-.text "fcart"                              ; name of the program used for starting
+.if BUILD_ONBOARD_FLASH != 0
+.text "fcart"                              ; Name of the program used for starting from onboard flash.
+.else
+.text "fccart"                             ; Name of the program used for starting from cartridge flash. This keeps the two versions distinguishable for instance in DOS
+.endif
 .byte $00                                  ; zero termination for "mless"
 .byte $00                                  ; no parameter description, i.e. an empty string
 .text "Write data to flash cartridge"      ; Comment shown in lsf
@@ -63,8 +70,13 @@ load16BitImmediate .macro  val, addr
     sta \addr+1
 .endmacro
 
+
+.if BUILD_ONBOARD_FLASH == 1
 ; Please add an entry for each 8K data block which you want to copy from flash
 BLOCK1 .dstruct BlockSpec_t, $08, 0, 3, 32  ; copy flash block $08 (block number 64 + $08) to RAM block 0. Start at offset $0300
+.else
+BLOCK1 .dstruct BlockSpec_t, $80 + $1F - 64, 0, 3, 32  ; copy flash block $9F to RAM block 0. Start at offset $0300
+.endif
 
 
 loader
