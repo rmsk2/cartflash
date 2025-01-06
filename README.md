@@ -1,6 +1,6 @@
 # cartflash
 
-This program allows you to write a file which resides on any of your Foenix's drives to a flash extension cartridge.
+This program allows you to write an image file which resides on any of your Foenix's drives to a flash extension cartridge.
 As the flash cartridge has a size of 256 KB the maximum file size is accordingly 256 KB. The flash cart
 organizes its memory in 8 KB blocks (strictly speaking in 4K blocks but the Foenix manages its memory in chunks of
 8 = 2 * 4 KB blocks), which in turn means that there are 32 individually addressable blocks available on the cartridge
@@ -8,11 +8,11 @@ which are numbered from 0 to 31.
 
 ## Usage
 
-Data read from the specified file is written to consecutive 8K blocks on the flash cart. When prompted for the file 
-name you can prefix it by a drive number followed by a colon. I.e. for instance `1:file.bin` would try to read 
-`file.bin` from drive 1. If no drive number is given it defaults to 0. You have to specify the number of the first 
-flash block which is to be used. This value has to be in the range from 0 to 31. `cartflash` checks that all of the 
-8K blocks of the file fit into the cartridge when the write operation begins on the given start block.
+Data read from the specified image file is written to consecutive 8K blocks on the flash cart beginning with the start block. 
+When prompted for the file name you can prefix it by a drive number followed by a colon. I.e. if you for instance enter
+`1:file.bin` then `fcart` would  try to read  `file.bin` from drive 1. If no drive number is given it defaults to 0. You have 
+to specify the number of the first flash block which is to be used. This value has to be in the range from 0 to 31. `cartflash` 
+checks that all of the 8K blocks of the file fit into the cartridge when the write operation begins at the given start block.
 
 In contrast to `Red-Fool`'s program available [here](https://github.com/Red-Fool/F256_FlashCart ) `cartflash`
 does as a default not erase the whole flash chip before writing new data to it. This allows you to add data to
