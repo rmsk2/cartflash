@@ -41,10 +41,10 @@ TXT_STARS       .text "*********************"
 TXT_PROG_NAME   .text "CartFlasher"
 TXT_DIVIDER     .text "--------------------"
 TXT_INFO1       .text "The flash cartridge has a size of 32 8K blocks. Therefore the start block", $0d
-TXT_INFO2       .text "has to be in the range from 0 to 31 and the image file size can be at most 256K.", $0d
-TXT_INFO3       .text "The image file data is written in consecutive flash blocks beginning with the", $0d
-TXT_INFO4       .text "start block. You can prefix the image file name with a drive number plus a", $0d
-TXT_INFO6       .text "colon.", $0d
+TXT_INFO2       .text "has to be in the range from 0 to 31 and the cartridge image file size can be", $0d
+TXT_INFO3       .text "at most 256K. The image file data is written in consecutive flash blocks", $0d
+TXT_INFO4       .text "beginning with the start block. You can prefix the image file name with a", $0d
+TXT_INFO6       .text "drive number plus a colon.", $0d
 TXT_INFO7       .text $0d, "Find the source code at https://github.com/rmsk2/cartflash. Published under"
 TXT_INFO8       .text $0d, "MIT license.", $0d
 TXT_INFO5       .text $0d, "Enter an empty string as a file name or start block to end program.", $0d
