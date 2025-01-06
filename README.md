@@ -27,7 +27,7 @@ from onboard flash memory you can leave out the `-`, i.e. you simply call `/fcar
 
 If you want to delete the whole flash cartridge before writing new data to it you can do that by adding the parameter 
 `erasealldata` when starting `fcart`, i.e. you could call `fcart` for instance like this `/fcart erasealldata` or this
-`/- fcart erasealldata`.
+`/- fcart erasealldata`. Similarly you can suppress the help message when you add the parameter `silent`.
 
 **WARNING**: When this parameter is detetced `fcart` asks for **no additional confirmation** before erasing all data.
 
