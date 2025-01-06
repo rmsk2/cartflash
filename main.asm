@@ -42,8 +42,8 @@ TXT_PROG_NAME   .text "CartFlasher"
 TXT_DIVIDER     .text "--------------------"
 TXT_INFO1       .text "The flash cartridge has a size of 32 8K blocks. Therefore the start block", $0d
 TXT_INFO2       .text "has to be in the range from 0 to 31 and the image file size can be at most 256K.", $0d
-TXT_INFO3       .text "The image file data is written in consecutive flash blocks. You can not write", $0d
-TXT_INFO4       .text "beyond block 31. You can prefix the image file name with a drive number plus a", $0d
+TXT_INFO3       .text "The image file data is written in consecutive flash blocks beginning with the", $0d
+TXT_INFO4       .text "start block. You can prefix the image file name with a drive number plus a", $0d
 TXT_INFO6       .text "colon.", $0d
 TXT_INFO7       .text $0d, "Find the source code at https://github.com/rmsk2/cartflash. Published under"
 TXT_INFO8       .text $0d, "MIT license.", $0d
