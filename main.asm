@@ -22,7 +22,7 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.2.1"
+PROG_VERSION    .text "1.2.2"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read  : $"
@@ -54,6 +54,7 @@ TXT_ERASE_ALL   .text "Erasing all data on flash cartridge ... "
 FILE_ALLOWED    .text "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789_-./:#+~()!&@[]*"
 DIGIT_ALLOWED   .text "0123456789"
 TXT_PARAM_ERASE .text "erasealldata", $00
+TXT_PARAM_NHELP .text "silent", $00
 TXT_10          .text "0         1         2         3 "
 TXT_01          .text "01234567890123456789012345678901"
 TXT_BLOCK_MAP   .text $0d,"Blocks already used", $0d, $0d
@@ -66,6 +67,7 @@ PROG_COUNT         .byte 0
 PROG_BLOCK         .byte 0
 ERASE_REQUESTED    .byte 0
 LEN_PARMS_IN_BYTES .byte 0
+HELP_SUPPRESS      .byte 0
 
 COL = $12 
 REV_COL = $21
@@ -88,17 +90,18 @@ main
     jsr setup.mmu
     jsr clut.init
     stz ERASE_REQUESTED
+    stz HELP_SUPPRESS
     jsr txtio.init80x60
     jsr txtio.cursorOn
     jsr initEvents
 
-    #move16Bit kernel.args.ext, PARM_PTR
     lda kernel.args.extlen
     sta LEN_PARMS_IN_BYTES
     lsr
     cmp #2
     bcc _noErase
     jsr checkEraseParam
+    jsr checkSilentParam
 
 _noErase
     ; clear screen
@@ -222,6 +225,17 @@ printMsgHeader
     lda #$20
     jsr txtio.charOut
     #printString TXT_STARS, len(TXT_STARS)
+    jsr printHelpMsg
+    jsr txtio.newLine
+    jsr txtio.newLine
+    #printString TXT_DIVIDER, len(TXT_DIVIDER)
+    jsr txtio.newLine
+    rts
+
+
+printHelpMsg
+    lda HELP_SUPPRESS
+    bne _end
     jsr txtio.newLine
     jsr txtio.newLine
     #printString TXT_INFO1, len(TXT_INFO1)
@@ -232,10 +246,7 @@ printMsgHeader
     #printString TXT_INFO7, len(TXT_INFO7)
     #printString TXT_INFO8, len(TXT_INFO8)
     #printString TXT_INFO5, len(TXT_INFO5)
-    jsr txtio.newLine
-    jsr txtio.newLine
-    #printString TXT_DIVIDER, len(TXT_DIVIDER)
-    jsr txtio.newLine
+_end
     rts
 
 
@@ -281,7 +292,8 @@ returnToBasic
 
 TEMP_LO .byte 0
 TEMP_HI .byte 0
-checkEraseParam
+getSecondParam
+    #move16Bit kernel.args.ext, PARM_PTR
     ; determine address of second CLI parameter
     ldy #2
     lda (PARM_PTR), y
@@ -290,21 +302,50 @@ checkEraseParam
     lda (PARM_PTR), y
     sta TEMP_HI
     #move16Bit TEMP_LO, PARM_PTR
-    ; initialize reference pointer
+    rts
+
+
+checkEraseParam
+    jsr getSecondParam
     #load16BitImmediate TXT_PARAM_ERASE, PARM_REF
-    ldy #0
-_cmpLoop
-    lda (PARM_PTR), y
-    cmp (PARM_REF), y
-    bne _doneUnequal
-    cmp #0
-    beq _doneEqual
-    iny
-    bra _cmpLoop
-_doneEqual
+    jsr strCmp
+    bcc _doneUnequal
     lda #BOOL_TRUE
     sta ERASE_REQUESTED
 _doneUnequal
+    rts
+
+
+checkSilentParam
+    jsr getSecondParam
+    #load16BitImmediate TXT_PARAM_NHELP, PARM_REF
+    jsr strCmp
+    bcc _doneUnequal
+    lda #BOOL_TRUE
+    sta HELP_SUPPRESS
+_doneUnequal
+    rts
+
+
+
+; carry is set if strings are equal. String 1 in MEM_PTR1, the other has to
+; be in MEM_PTR2.
+strCmp
+    ldy #0
+_loop
+    lda (PARM_PTR), y
+    cmp (PARM_REF), y
+    bne _notFound
+    cmp #0
+    beq _found
+    iny
+    beq _notFound
+    bra _loop
+_notFound
+    clc
+    rts
+_found
+    sec
     rts
 
 
