@@ -22,12 +22,12 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.2.0"
+PROG_VERSION    .text "1.2.1"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read  : $"
 TXT_BLOCKS_READ .text "Blocks read : $"
-TXT_FILE_NAME   .text "File to load: "
+TXT_FILE_NAME   .text "Image to load: "
 TXT_BLOCK_START .text "Start block : "
 TXT_CURRENT_BLK .text "Writing to  : "
 TXT_ERASE       .text "Erasing block ... "
@@ -41,19 +41,22 @@ TXT_STARS       .text "*********************"
 TXT_PROG_NAME   .text "CartFlasher"
 TXT_DIVIDER     .text "--------------------"
 TXT_INFO1       .text "The flash cartridge has a size of 32 8K blocks. Therefore the start block", $0d
-TXT_INFO2       .text "has to be in the range from 0 to 31 and the file size can be at most 256K.", $0d
-TXT_INFO3       .text "The file data is written in consecutive flash blocks. You can not write", $0d
-TXT_INFO4       .text "beyond block 31. You can prefix the file name with a drive number plus a", $0d
+TXT_INFO2       .text "has to be in the range from 0 to 31 and the image file size can be at most 256K.", $0d
+TXT_INFO3       .text "The image file data is written in consecutive flash blocks. You can not write", $0d
+TXT_INFO4       .text "beyond block 31. You can prefix the image file name with a drive number plus a", $0d
 TXT_INFO6       .text "colon.", $0d
-TXT_INFO7       .text $0d, "Find the source code at https://github.com/rmsk2/cartflash. Published"
-TXT_INFO8       .text $0d, "under MIT license.", $0d
+TXT_INFO7       .text $0d, "Find the source code at https://github.com/rmsk2/cartflash. Published under"
+TXT_INFO8       .text $0d, "MIT license.", $0d
 TXT_INFO5       .text $0d, "Enter an empty string as a file name or start block to end program.", $0d
-TXT_LOAD_FILE   .text $0d, "Loading file ... "
+TXT_LOAD_FILE   .text $0d, "Loading image file ... "
 TXT_ERASE_ALL   .text "Erasing all data on flash cartridge ... "
 
 FILE_ALLOWED    .text "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789_-./:#+~()!&@[]*"
 DIGIT_ALLOWED   .text "0123456789"
 TXT_PARAM_ERASE .text "erasealldata", $00
+TXT_10          .text "0         1         2         3 "
+TXT_01          .text "01234567890123456789012345678901"
+TXT_BLOCK_MAP   .text $0d,"Blocks already used", $0d, $0d
 
 
 DIGIT_BUFFER       .word 0
@@ -120,6 +123,15 @@ _noErase
     jsr txtio.newLine
 
 _start
+    jsr discoverContents
+    #printString TXT_BLOCK_MAP, len(TXT_BLOCK_MAP)
+    #printString TXT_10, len(TXT_10)
+    jsr txtio.newLine
+    #printString TXT_01, len(TXT_01)
+    jsr txtio.newLine
+    #printString BLOCK_MAP, 32
+    jsr txtio.newLine
+    jsr txtio.newLine
     jsr txtio.newLine
     ; enter file name
     #printString TXT_FILE_NAME, len(TXT_FILE_NAME)
@@ -399,6 +411,66 @@ _verifyError
     sec
     rts
 
+
+MMU_TEMP .byte 0
+BLOCK_MAP .fill 32
+CURRENT_BLOCK .byte 0
+PROG_LEN .byte 0
+
+discoverContents
+    ldy #0
+    sty PROG_LEN
+    lda #'.'
+_clearLoop
+    sta BLOCK_MAP, y
+    iny
+    cpy #32
+    bne _clearLoop
+
+    lda 13
+    sta MMU_TEMP
+
+    ldy #0
+    lda #$80
+    sta CURRENT_BLOCK
+_blockLoop
+    cpy #32
+    beq _restoreMMU
+
+    lda PROG_LEN
+    beq _lookAtBlock
+    dec PROG_LEN
+    lda PROG_LEN
+    beq _lookAtBlock
+    bra _markAsUsed
+
+_lookAtBlock
+    lda CURRENT_BLOCK
+    sta 13
+
+    lda $A000
+    cmp #$F2
+    bne _nextBlock
+
+    lda $A001
+    cmp #$56
+    bne _nextBlock
+
+    lda $A002
+    sta PROG_LEN
+_markAsUsed
+    lda #214
+    sta BLOCK_MAP, y
+
+_nextBlock
+    iny
+    inc CURRENT_BLOCK
+    bra _blockLoop
+
+_restoreMMU
+    lda MMU_TEMP
+    sta 13
+    rts
 
 
 XDEV .text "xdev"
