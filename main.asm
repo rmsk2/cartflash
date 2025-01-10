@@ -22,14 +22,14 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.2.2"
+PROG_VERSION    .text "1.2.3"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
-TXT_BYTES_READ  .text "Bytes read  : $"
-TXT_BLOCKS_READ .text "Blocks read : $"
+TXT_BYTES_READ  .text "Bytes read   : $"
+TXT_BLOCKS_READ .text "Blocks read  : "
 TXT_FILE_NAME   .text "Image to load: "
-TXT_BLOCK_START .text "Start block : "
-TXT_CURRENT_BLK .text "Writing to  : "
+TXT_BLOCK_START .text "Start block  : "
+TXT_CURRENT_BLK .text "Writing to   : "
 TXT_ERASE       .text "Erasing block ... "
 TXT_PROGRAM     .text "Programming block ... "
 TXT_VERFIFY_OK  .text "Verification successfull"
@@ -265,7 +265,9 @@ printFileInfo
     ; print number of 8K blocks read
     #printString TXT_BLOCKS_READ, len(TXT_BLOCKS_READ)
     lda bload.BYTE_COUNTER.numBlocks
-    jsr txtio.printByte
+    sta txtio.WORD_TEMP
+    stz txtio.WORD_TEMP + 1
+    jsr txtio.printWordDecimal
     jsr txtio.newLine
     rts
 
