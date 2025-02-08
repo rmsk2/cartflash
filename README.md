@@ -3,7 +3,7 @@
 The 256K flash expansion cartridge organizes its memory in 8 KB blocks (strictly speaking in 4K blocks but the 
 Foenix manages its memory in chunks of 8 = 2 * 4 KB blocks), which in turn means that there are 32 individually 
 addressable blocks available on the cartridge. These are numbered from 0 to 31. This program allows you to write
-a file which which resides on any of your Foenix's drives and contains one or several blocks of 8K size to
+a file which resides on any of your Foenix's drives and contains one or several blocks of 8K size to
 consecutive blocks on the flash expansion cartridge. This data file is called a cartridge image file or shorter 
 an image file. As the flash cartridge has a size of 256 KB the maximum image file size is accordingly 256 KB. 
 
