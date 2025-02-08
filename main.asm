@@ -22,7 +22,7 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.2.3"
+PROG_VERSION    .text "1.2.4"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read   : $"
@@ -126,8 +126,9 @@ _noErase
     jsr txtio.newLine
 
 _start
-    jsr discoverContents
     #printString TXT_BLOCK_MAP, len(TXT_BLOCK_MAP)
+    jsr discoverContents
+    jsr txtio.newLine
     #printString TXT_10, len(TXT_10)
     jsr txtio.newLine
     #printString TXT_01, len(TXT_01)
@@ -459,8 +460,13 @@ MMU_TEMP .byte 0
 BLOCK_MAP .fill 32
 CURRENT_BLOCK .byte 0
 PROG_LEN .byte 0
+;PROG_SYMBOL .text "ABCDEFGHIJKLMNOPQRSTUVWXYZ234568"
+PROG_SYMBOL .byte 214, 141, 18, 21, 30, 23, 31, 180, 179, 253, 254, 255, 16
+.text "#*ABCDEFGHIJKLMNOPQ"
+
 
 discoverContents
+    ldx #$FF
     ldy #0
     sty PROG_LEN
     lda #'.'
@@ -499,10 +505,12 @@ _lookAtBlock
     cmp #$56
     bne _nextBlock
 
+    inx
+    jsr printProgName
     lda $A002
     sta PROG_LEN
 _markAsUsed
-    lda #214
+    lda PROG_SYMBOL, x
     sta BLOCK_MAP, y
 
 _nextBlock
@@ -515,6 +523,33 @@ _restoreMMU
     sta 13
     rts
 
+
+CURRENT_SYMBOL .byte ?
+printProgName
+    phx
+    phy
+    lda PROG_SYMBOL, x
+    sta CURRENT_SYMBOL
+    lda CURRENT_SYMBOL
+    jsr txtio.charOut
+    lda #' '
+    jsr txtio.charOut
+    lda #'='
+    jsr txtio.charOut
+    lda #' '
+    jsr txtio.charOut
+    ldy #0
+_checkZero
+    lda $A00A, y
+    beq _done
+    jsr txtio.charOut
+    iny
+    bra _checkZero
+_done
+    jsr txtio.newLine
+    ply
+    plx
+    rts
 
 XDEV .text "xdev"
 .byte 0
