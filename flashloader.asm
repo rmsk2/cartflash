@@ -17,7 +17,11 @@ MMU_SOURCE     = (SOURCE_ADDRESS / $2000) + 8
 MMU_TARGET     = (TARGET_ADDRESS / $2000) + 8
 ; Set to zero to build a version which lives in block $1f of the cartridge.
 ; If set to any other value the onboard flash block $08 is used.
-BUILD_ONBOARD_FLASH = 1
+
+;***************************
+;* This variable has to be set on the 64tass command line
+;***************************
+;BUILD_ONBOARD_FLASH = 1
 
 * = LOAD_ADDRESS
 .cpu "w65c02"
