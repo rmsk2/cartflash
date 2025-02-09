@@ -30,8 +30,10 @@ If you want to delete the whole flash cartridge before writing new data to it yo
 `/- fcart erasealldata`.
 
 **WARNING**: When this parameter is detetced `fcart` asks for **no additional confirmation** before erasing all data.
+If you want to remove a KUP from the cartridge without erasing all the data stored on it you can simply overwrite the
+first block of the KUP with 8192 zero bytes. For this purpose the file `zeroes.dat` contained in this repo can be used.
 
-Similarly you can suppress the help message when you add the parameter `silent`.
+You can suppress the help message which is shown when `fcart` is started by adding the parameter `silent`.
 
 ## How to build the program
 
