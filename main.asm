@@ -22,7 +22,7 @@ MAX_FILE_LENGTH = 100
 FIRST_MEM_BLOCK = 8
 MMU_REG_LOAD = 12
 
-PROG_VERSION    .text "1.2.4"
+PROG_VERSION    .text "1.2.5"
 TXT_FILE_ERROR  .text "Error reading file", $0d
 TXT_BLOCK_ERROR .text $0d, "Data does not fit at given start position"
 TXT_BYTES_READ  .text "Bytes read   : $"
@@ -58,6 +58,7 @@ TXT_PARAM_NHELP .text "silent", $00
 TXT_10          .text "0         1         2         3 "
 TXT_01          .text "01234567890123456789012345678901"
 TXT_BLOCK_MAP   .text $0d,"Blocks already used", $0d, $0d
+TXT_BLOCK_FREE  .text ". = Block free or not claimed by a KUP", $0d
 
 
 DIGIT_BUFFER       .word 0
@@ -127,7 +128,9 @@ _noErase
 
 _start
     #printString TXT_BLOCK_MAP, len(TXT_BLOCK_MAP)
+    #printString TXT_BLOCK_FREE, len(TXT_BLOCK_FREE)
     jsr discoverContents
+    jsr txtio.newLine
     jsr txtio.newLine
     #printString TXT_10, len(TXT_10)
     jsr txtio.newLine
