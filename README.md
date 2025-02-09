@@ -53,7 +53,7 @@ flash cartridge via `fcart`.
 
 Storing `fcart` in the last block of a flash cartridge allows it to be self contained in such a way that no additional
 software is needed  to store data on it. If no other KUP headers are present in the cartridge upon boot or a reset then  
-`fcart` would be started automatically. If another KUP header is written in any other block this would take precendence 
+`fcart` will be started automatically. If another KUP header is written in any other block this would take precendence 
 for autostart and `fcart` would still be callable via DOS or BASIC. In order to be able to distinguish a version written 
 to cartridge flash from another one living in onboard flash, the cartridge version is named `fccart`.
 
