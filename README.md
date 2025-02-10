@@ -63,4 +63,4 @@ Prebuilt binaries are available at the [releases section](https://github.com/rms
 Download either the `.pgz`, the `.zip` or the `.bin` file from there. The `pgz` is the executable which can be started via `pexec`
 after being transferred to your Foenix via an SD card, `dcopy`or `FoenixMgr`. The `.zip` file contains a flash image 
 and a `bulk.csv` which can be used to write `fcart` to block $08 of the onboard flash memory via `FoenixMgr`. `cartridge.bin` is
-a cartridge image file which can be written to block 31 of a flash cartridge using this software.
+a cartridge image file which can be written to block 31 of a flash cartridge using for instance `fcart.pgz`.
