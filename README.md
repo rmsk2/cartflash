@@ -57,6 +57,9 @@ software is needed  to store data on it. If no other KUP headers are present in 
 for autostart but `fcart` is still callable via DOS or BASIC. In order to be able to distinguish a version written 
 to cartridge flash from another one living in onboard flash, the cartridge version is named `fccart`.
 
+All flash versions of `fcart` are freely relocatble in flash memory, be it in onboard or cartridge flash. I.e. you can
+store them in any flash block you like and they will work.
+
 ## Binary distribution
 
 Prebuilt binaries are available at the [releases section](https://github.com/rmsk2/cartflash/releases) of this repository. 
