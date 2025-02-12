@@ -61,7 +61,7 @@ COUNT_BLOCK = TXT_PTR2 + 1
 PTR_STRUCT = MEM_PTR3
 
 BlockSpec_t .struct s, t, sp, ep
-    sourceBlock .byte 64 + \s          ; source of block to copy, i.e. a block number (>= 64) in flash memory
+    sourceBlock .byte \s               ; source of block to copy, i.e. a block number (>= 64) in flash memory
     targetBlock .byte \t               ; target of block to copy, i.e. a block in RAM (0 <= block <= 7)
     startPage   .byte \sp              ; the page number (one page = 256 bytes) where the copy operation should be copied 
     endPage     .byte \ep              ; the page number where the copy operation should stop. There are 32 pages in an 8K block
@@ -75,13 +75,7 @@ load16BitImmediate .macro  val, addr
 .endmacro
 
 
-.if BUILD_ONBOARD_FLASH != 0
-; Please add an entry for each 8K data block which you want to copy from flash
-BLOCK1 .dstruct BlockSpec_t, $08, 0, 3, 32  ; copy flash block $08 (block number 64 + $08) to RAM block 0. Start at offset $0300
-.else
-BLOCK1 .dstruct BlockSpec_t, $80 + $1F - 64, 0, 3, 32  ; copy flash block $9F to RAM block 0. Start at offset $0300
-.endif
-
+BLOCK1 .dstruct BlockSpec_t, 0, 0, 3, 32  ; copy detected flash block to RAM block 0. Start at offset $0300
 
 loader
     ; setup MMU
@@ -89,8 +83,11 @@ loader
     sta 0
     lda #%00000000                         ; enable io pages and set active page to 0
     sta 1
+
+    jsr relocate
+
     ; set struct base address
-    #load16BitImmediate BLOCK1, PTR_STRUCT
+    #load16BitImmediate COPY_TAB, PTR_STRUCT
     stz STRUCT_INDEX
     stz COUNT_BLOCK
 _loop8K
@@ -154,6 +151,47 @@ _copyPage
     lda #MMU_SOURCE - 8
     sta MMU_SOURCE
     jmp PAYLOAD_START
+
+
+copyStruct
+    lda #NUM_8K_BLOCKS
+    asl
+    asl
+    sta NUM_BYTES
+    ldy #0
+_loop
+    lda BLOCK1, y
+    sta COPY_TAB, y
+    iny
+    cpy NUM_BYTES
+    bne _loop
+    rts
+
+
+updateBlocks
+    lda #NUM_8K_BLOCKS
+    asl
+    asl
+    sta NUM_BYTES
+    ldy #0
+    lda 13
+_loop
+    sta COPY_TAB, y
+    iny
+    iny
+    iny
+    iny
+    cpy NUM_BYTES
+    beq _end
+    ina
+    bra _loop
+_end
+    rts
+
+relocate
+    jsr copyStruct
+    jsr updateBlocks
+    rts
 
 ; pad the binary out to 768 = $0300 bytes
 END_PROG

@@ -11,3 +11,6 @@ FILEIO_PTR1 = $A2;/$A3
 CLEAN_PTR = $A4;/$A5
 PATH_PTR = $A6;/$A7
 PARM_PTR = $A8;/$A9
+NUM_BYTES = $AA
+; 24 bytes for data structure
+COPY_TAB = $B0;-$C8
