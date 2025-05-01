@@ -5,7 +5,26 @@ Foenix manages its memory in chunks of 8 = 2 * 4 KB blocks), which in turn means
 addressable blocks available on the cartridge. These are numbered from 0 to 31. This program allows you to write
 a file which resides on any of your Foenix's drives and contains one or several blocks of 8K size to
 consecutive blocks on the flash expansion cartridge. This data file is called a cartridge image file or shorter 
-an image file. As the flash cartridge has a size of 256 KB the maximum image file size is accordingly 256 KB. 
+an image file. As the flash cartridge has a size of 256 KB the maximum image file size is accordingly 256 KB.
+
+**A cautionary note:** If you do not use a loader like for instance [flashselect](https://github.com/rmsk2/flashselect)
+you have to be careful what programs you write to a flash cartridge. 
+
+The reason for this is that the microkernel searches the blocks of a flash cartrigde for a valid KUP header. This search
+starts in block 0 and progresses up to block 31. As soon as a valid header is found the corresponding program is started. 
+Let's assume this program crashes and you need to press the reset button. In this case the computer reboots and the kernel
+will start the program again, which again crashes and so on ... . So in essence you have locked yourself out of the
+cartridge because you need to insert the cartridge in order to overwrite it but due to the boot loop you can't start 
+`fcart` because you will never get to a BASIC prompt.
+
+You will end up in the same situation even if the first program on the flash cartridge does not crash but simply offers 
+no way to return to the BASIC prompt. Using `flashselect` prevents this situation as it is the first program on the
+flash cartridge and will therefore always be started before any other program on the cartridge and offers an easy way
+to exit to BASIC.
+
+If you have already locked yourself out of a cartridge there is way out. Since February 2025 the kernel can be
+instructed to not search the flash cartridge for a KUP by turning [DIP switch](https://wiki.f256foenix.com/index.php?title=DIP_switches) 
+#1 on.
 
 ## Usage
 
