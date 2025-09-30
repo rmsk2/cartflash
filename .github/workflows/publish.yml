@@ -1,0 +1,28 @@
+name: Publish binary
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up 64 tass on Ubuntu
+        run: |
+          sudo apt-get install 64tass
+      - name: Build Binaries
+        run: |
+          make dist
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/cartridge.bin
+            dist/fcart.pgz
+            dsit/onboard.zip
+          tag_name: ${{ github.ref_name }}
+          body_path: CHANGES.txt
+          token: ${{ secrets.PUBLISH_TOKEN }}
