@@ -1,1 +1,1 @@
-- Add action to publish binaries
+- Fix bug in action

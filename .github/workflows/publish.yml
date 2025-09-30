@@ -22,7 +22,7 @@ jobs:
           files: |
             dist/cartridge.bin
             dist/fcart.pgz
-            dsit/onboard.zip
+            dist/onboard.zip
           tag_name: ${{ github.ref_name }}
           body_path: CHANGES.txt
           token: ${{ secrets.PUBLISH_TOKEN }}
